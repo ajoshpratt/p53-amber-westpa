@@ -1,0 +1,43 @@
+#!/bin/bash
+#   prod.in
+#   1 ns production using Langevin thermostat and Generalized Born implicit
+#   solvation
+#   RUN AS SCRIPT TO REMOVE ANNOTATIONS PRIOR TO USE
+#   Written by Karl Debiec on 15-04-14, last updated by Karl Debiec on 15-11-05
+sed "/^sed/d;s/#.*//;/^\s*$/d;s/\s*$//" $(basename $0) > $(basename $0 .annotated); exit
+1 ns production using Langevin thermostat and GB
+################################### CONTROL ###################################
+&cntrl
+################################# INTEGRATOR ##################################
+  irest     = 0,        # Do not restart calculation from input file
+  ntx       = 1,        # Read input coordinates
+  ig        = -1,       # Use random seed from current time
+  dt        = 0.002,    # Timestep (ps)
+  nstlim    = 25000,   # Simulation duration (timesteps)
+  nscm      = 500,      # Center of mass motion removal interval (timesteps)
+  ntr       = 0,        # Do not apply position restraints
+################################## ENSEMBLE ###################################
+  ntb       = 0,        # Periodic boundary conditions disabled
+  ntp       = 0,        # Barostat disabled
+  ntt       = 3,        # Langevin thermostat
+  tempi     = 298.0,    # Initialize velocities from Maxwellian distribution
+  temp0     = 298.0,    # System temperature (K)
+  gamma_ln  = 80.0,     # Langevin collision frequency (1 / tau) (ps-1)
+############################# BONDED INTERACTIONS #############################
+  ntf       = 2,        # Exclude bonds to hydrogen from force calculation
+  ntc       = 2,        # Constrain bonds to hydrogen using SHAKE
+  tol       = 0.000001, # More stringent tolerance than the default
+ ########################### NONBONDED INTERACTIONS ############################
+  cut       = 999.0,    # Nonbonded cutoff (A)
+############################## IMPLICIT SOLVENT ###############################
+  igb       = 8,        # Generalized Born implicit solvent
+  rgbmax    = 999.0,    # Cutoff for effective Born radii calculation (A)
+  saltcon   = 0      # Physiological Concentration of Salt
+  gbsa      = 0,        # No GBSA
+################################### OUTPUT ####################################
+  ntpr      = 500,      # Energy log output interval (timesteps)
+  ntxo      = 1,        # Output restart file in ASCII text format
+  ntwr      = 25000,   # Restart file output interval (timesteps)
+  ioutfm    = 1,        # Output trajectory in NetCDF binary format
+  ntwx      = 250,      # Trajectory output interval (timesteps)
+&end
